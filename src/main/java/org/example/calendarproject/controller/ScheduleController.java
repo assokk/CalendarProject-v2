@@ -1,9 +1,7 @@
 package org.example.calendarproject.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.calendarproject.dto.ScheduleResponse;
-import org.example.calendarproject.dto.ScheduleSaveRequest;
-import org.example.calendarproject.dto.ScheduleSaveResponse;
+import org.example.calendarproject.dto.*;
 import org.example.calendarproject.service.ScheduleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +30,12 @@ public class ScheduleController {
     }
 
     @PutMapping("/schedules/{id}")
-    public ResponseEntity<ScheduleResponse> updateSchedule(@PathVariable long id, @RequestBody ScheduleSaveRequest request) {
+    public ResponseEntity<ScheduleUpdateResponse> updateSchedule(@PathVariable long id, @RequestBody ScheduleUpdateRequest request) {
         return ResponseEntity.ok(scheduleService.updateSchedule(id, request));
     }
 
     @DeleteMapping("/schedules/{id}")
-    public void deleteSchedule(@PathVariable long id, @RequestParam String password) {
-        scheduleService.deleteSchedule(id, password);
+    public void deleteSchedule(@PathVariable long id) {
+        scheduleService.deleteSchedule(id);
     }
 }

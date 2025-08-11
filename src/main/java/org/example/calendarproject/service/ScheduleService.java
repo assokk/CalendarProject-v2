@@ -1,10 +1,8 @@
 package org.example.calendarproject.service;
 
+import org.example.calendarproject.dto.*;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.calendarproject.dto.ScheduleResponse;
-import org.example.calendarproject.dto.ScheduleSaveRequest;
-import org.example.calendarproject.dto.ScheduleSaveResponse;
 import org.example.calendarproject.entity.Schedule;
 import org.example.calendarproject.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,7 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleSaveResponse save(ScheduleSaveRequest scheduleSaveRequest) {
-        Schedule schedule = new Schedule(scheduleSaveRequest.getTitle(), scheduleSaveRequest.getContents(), scheduleSaveRequest.getAuthor(), scheduleSaveRequest.getPassword());
+        Schedule schedule = new Schedule(scheduleSaveRequest.getTitle(), scheduleSaveRequest.getContents(), scheduleSaveRequest.getAuthor());
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return new ScheduleSaveResponse(
                 savedSchedule.getId(),
@@ -83,16 +81,14 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleResponse updateSchedule(long id, ScheduleSaveRequest request) {
+    public ScheduleUpdateResponse updateSchedule(long id, ScheduleUpdateRequest request) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Schedule not found")
         );
-        if (!ObjectUtils.nullSafeEquals(schedule.getPassword(), request.getPassword())) {
-            throw new IllegalArgumentException("Password doesn't match");
-        }
+
         schedule.updateTitleAndAuthor(request.getTitle(), request.getAuthor());
 
-        return new ScheduleResponse(
+        return new ScheduleUpdateResponse(
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContents(),
@@ -103,13 +99,11 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void deleteSchedule(long id, String password) {
+    public void deleteSchedule(long id) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Schedule not found")
         );
-        if (!ObjectUtils.nullSafeEquals(schedule.getPassword(), password)) {
-            throw new IllegalArgumentException("Password doesn't match");
-        }
+
         scheduleRepository.deleteById(id);
     }
 }
