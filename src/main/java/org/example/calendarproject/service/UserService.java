@@ -1,12 +1,16 @@
 package org.example.calendarproject.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.calendarproject.dto.UserResponse;
 import org.example.calendarproject.dto.UserSaveRequest;
 import org.example.calendarproject.dto.UserSaveResponse;
 import org.example.calendarproject.entity.User;
 import org.example.calendarproject.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +28,37 @@ public class UserService {
                 savedUser.getEmail(),
                 savedUser.getCreatedAt(),
                 savedUser.getModifiedAt()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponse> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserResponse> userResponses = new ArrayList<>();
+
+        for (User user : users) {
+                userResponses.add(new UserResponse(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getCreatedAt(),
+                        user.getModifiedAt()
+                ));
+            }
+        return userResponses;
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse findUserById(long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("User with id " + id + " not found")
+        );
+        return new UserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
         );
     }
 }
