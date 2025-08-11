@@ -76,4 +76,13 @@ public class UserService {
                 user.getModifiedAt()
         );
     }
+
+    @Transactional
+    public void deleteUser(long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("User with id " + id + " not found")
+        );
+
+        userRepository.deleteById(id);
+    }
 }
