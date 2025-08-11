@@ -1,9 +1,7 @@
 package org.example.calendarproject.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.calendarproject.dto.UserResponse;
-import org.example.calendarproject.dto.UserSaveRequest;
-import org.example.calendarproject.dto.UserSaveResponse;
+import org.example.calendarproject.dto.*;
 import org.example.calendarproject.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +27,10 @@ public class UserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable long id) {
         return ResponseEntity.ok(userService.findUserById(id));
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<UserUpdateResponse> updateUser(@PathVariable long id, @RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
     }
 }

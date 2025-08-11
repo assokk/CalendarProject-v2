@@ -1,9 +1,7 @@
 package org.example.calendarproject.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.calendarproject.dto.UserResponse;
-import org.example.calendarproject.dto.UserSaveRequest;
-import org.example.calendarproject.dto.UserSaveResponse;
+import org.example.calendarproject.dto.*;
 import org.example.calendarproject.entity.User;
 import org.example.calendarproject.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +52,23 @@ public class UserService {
                 () -> new IllegalArgumentException("User with id " + id + " not found")
         );
         return new UserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
+
+    @Transactional
+    public UserUpdateResponse updateUser(Long id, UserUpdateRequest request) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("User with id " + id + " not found")
+        );
+
+        user.updateNameOrEmail(request.getUsername(), request.getEmail());
+
+        return new UserUpdateResponse(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
