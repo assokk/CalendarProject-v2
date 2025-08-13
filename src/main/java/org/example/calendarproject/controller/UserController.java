@@ -14,9 +14,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/users")
-    public ResponseEntity<UserSaveResponse> saveUser (@RequestBody UserSaveRequest request) {
-        return ResponseEntity.ok(userService.save(request));
+    @PostMapping("/users/signup")
+    public ResponseEntity<UserSaveResponse> signup (@RequestBody UserSaveRequest request) {
+        return ResponseEntity.ok(userService.signup(request));
     }
 
     @GetMapping("/users")
