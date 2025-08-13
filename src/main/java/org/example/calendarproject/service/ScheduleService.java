@@ -19,50 +19,32 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleSaveResponse save(ScheduleSaveRequest scheduleSaveRequest) {
-        Schedule schedule = new Schedule(scheduleSaveRequest.getTitle(), scheduleSaveRequest.getContents(), scheduleSaveRequest.getAuthor());
+        Schedule schedule = new Schedule(scheduleSaveRequest.getTitle(), scheduleSaveRequest.getContents());
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return new ScheduleSaveResponse(
                 savedSchedule.getId(),
                 savedSchedule.getTitle(),
                 savedSchedule.getContents(),
-                savedSchedule.getAuthor(),
                 savedSchedule.getCreatedAt(),
                 savedSchedule.getModifiedAt()
         );
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponse> findSchedules(String author) {
+    public List<ScheduleResponse> findSchedules() {
         List<Schedule> schedules = scheduleRepository.findAll();
         List<ScheduleResponse> scheduleResponses = new ArrayList<>();
 
-        if(author == null) {
             for (Schedule schedule : schedules) {
                 scheduleResponses.add(new ScheduleResponse(
                         schedule.getId(),
                         schedule.getTitle(),
                         schedule.getContents(),
-                        schedule.getAuthor(),
                         schedule.getCreatedAt(),
                         schedule.getModifiedAt()
                 ));
             }
             return scheduleResponses;
-        }
-
-        for (Schedule schedule : schedules) {
-            if(author.equals(schedule.getAuthor())) {
-                scheduleResponses.add(new ScheduleResponse(
-                        schedule.getId(),
-                        schedule.getTitle(),
-                        schedule.getContents(),
-                        schedule.getAuthor(),
-                        schedule.getCreatedAt(),
-                        schedule.getModifiedAt()
-                ));
-            }
-        }
-        return scheduleResponses;
     }
 
     @Transactional(readOnly = true)
@@ -74,7 +56,6 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContents(),
-                schedule.getAuthor(),
                 schedule.getCreatedAt(),
                 schedule.getModifiedAt()
         );
@@ -86,13 +67,12 @@ public class ScheduleService {
                 () -> new IllegalArgumentException("Schedule not found")
         );
 
-        schedule.updateTitleAndAuthor(request.getTitle(), request.getAuthor());
+        schedule.updateTitleAndContents(request.getTitle(), request.getContents());
 
         return new ScheduleUpdateResponse(
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContents(),
-                schedule.getAuthor(),
                 schedule.getCreatedAt(),
                 schedule.getModifiedAt()
         );
