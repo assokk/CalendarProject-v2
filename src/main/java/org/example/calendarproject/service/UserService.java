@@ -1,5 +1,6 @@
 package org.example.calendarproject.service;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.calendarproject.dto.*;
 import org.example.calendarproject.entity.User;
@@ -84,5 +85,15 @@ public class UserService {
         );
 
         userRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean login(UserLoginRequest request, HttpSession session) {
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+        if (user == null) return false;
+        if (!user.getPassword().equals(request.getPassword())) return false;
+
+        session.setAttribute("loginUserId", user.getId());
+        return true;
     }
 }
